@@ -4,13 +4,6 @@ var Listly = function() {
     var self = this;
     self.tasks = [];
 
-    function load() {
-      self.tasks = JSON.parse(localStorage.tasks);
-      $.each(self.tasks, function(index, name) {
-        $('#tasks').append('<li class="list-group-item">' + name + '</li>');
-      });
-    }
-
     function addTask(name) {
       self.tasks.push(name);
       if (save()) {
@@ -21,17 +14,34 @@ var Listly = function() {
       }
     }
 
-    function save() {
-      console.log("Add storage");
+    function showFormError(form) {
+      $(form).find('.alert')
+        .html('<em>Yo dawg<em>, we screwed up!')
+        .removeClass('hidden');
+    }
 
-      if ("localStorage" in window) {
-        try {
-          return (localStorage.tasks = JSON.stringify(self.tasks));
-        } catch (err) {
-          return false;
-        }
+    function supportsLocalStorage() {
+      try {
+        // undefined.something;
+        return 'localStorage' in window && window.localStorage !== null;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    function load() {
+      if (supportsLocalStorage() && localStorage.tasks) {
+        self.tasks = JSON.parse(localStorage.tasks);
+        $.each(self.tasks, function(index, name) {
+          $('#tasks').append('<li class="list-group-item">' + name + '</li>');
+        });
+      }
+    }
+
+    function save() {
+      if (supportsLocalStorage()) {
+        return (localStorage.tasks = JSON.stringify(self.tasks));
       } else {
-        alert("no localStorage in window");
         return false;
       }
     }
@@ -45,6 +55,8 @@ var Listly = function() {
 
       if (addTask(task_name)) {
         field.val('');
+      } else {
+        showFormError(this);
       }
       field.focus().select();
     });
