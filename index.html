@@ -12,13 +12,15 @@
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 </head>
-
 <body>
 
   <div class="well col-sm-6 col-sm-offset-3 col-xs-12">
     <h1>Listly</h1>
     <ol id="tasks" class="list-group">
-
+      <li id="list_item_template" class="list-group-item hidden">
+        <label></label>
+        <button class="btn btn-sm btn-danger">Del</button>
+      </li>
     </ol>
 
     <form role="form" id="new_task" class="form-inline">
