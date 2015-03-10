@@ -5,42 +5,39 @@ var Listly = function () {
     self.tasks = [];
 
     function addTask(task_name) {
-      self.tasks.push(task_name);
-
-      if (save()) {
-        appendToList(task_name);
-        return true;
+      var task = new Task({ name: task_name })
+      self.tasks.push(task);
+      if (task_name !== '' && save()) {
+          appendToList(task);
+          return true;
       } else {
-        return false;
+          return false;
       }
     }
 
-    function appendToList(task_name) {
-      // Grab the list item template
-
+    function appendToList(task) {
       var li = $('#list_item_template').clone();
       li.removeAttr('id');
       
-      li.find('label').text(task_name);
+      li.find('label').text(task.name);
       li.removeClass('hidden');
 
       li.find('.btn-danger').click(function() {
-        removeFromList(task_name);
-        // Remove it from the <ol>
+        removeFromList(task);
         li.remove();
       });
 
       $('#tasks').append(li);
     }
 
-    function removeFromList(task_name) {
-      self.tasks.splice(self.tasks.indexOf(task_name), 1);
-      save();
+    function removeFromList(task) {
+      self.tasks.splice(self.tasks.indexOf(task), 1);
+      save()
     }
 
     function showFormError(form) {
       $(form).find('.alert')
-        .html('<em>Yo dawg<em>, we screwed up!')
+        .html('<em>Yo dawg<em>, something\s up!!')
         .removeClass('hidden');
     }
 
@@ -83,8 +80,7 @@ var Listly = function () {
       if (addTask(task_name)) {
         field.val('');
       } else {
-         // setTimeout(showFormError(this), 3000);
-         // removeFormError(this);
+         showFormError(this);
       }
       field.focus().select();
     });
