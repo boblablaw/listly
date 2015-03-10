@@ -1,17 +1,43 @@
-var Listly = function() {
+var Listly = function () {
 
   function Listly() {
     var self = this;
     self.tasks = [];
 
-    function addTask(name) {
-      self.tasks.push(name);
+    function addTask(task_name) {
+      self.tasks.push(task_name);
       if (save()) {
-        $('#tasks').append('<li class="list-group-item">' + name + '</li>');
+        appendToList(task_name);
         return true;
       } else {
         return false;
       }
+    }
+
+    function appendToList(task_name) {
+      // Grab the list item template
+
+      var li = $('#list_item_template').clone();
+      li.removeAttr('id');
+      
+      li.find('label').text(task_name);
+      li.removeClass('hidden');
+
+      li.find('.btn-danger').click(function() {
+        // Remove it from the array
+        index = self.tasks.indexOf(li.find('label').text());
+        self.tasks.slice(index, 1);
+        // Save the array to local storage
+
+        // Remove it from the <ol>
+        li.remove();
+      });
+
+      $('#tasks').append(li);
+    }
+
+    function removeFromList(task_name) {
+
     }
 
     function showFormError(form) {
@@ -20,9 +46,12 @@ var Listly = function() {
         .removeClass('hidden');
     }
 
+    function removeFormError(form) {
+      $(form).addClass('hidden');
+    }
+
     function supportsLocalStorage() {
       try {
-        // undefined.something;
         return 'localStorage' in window && window.localStorage !== null;
       } catch (err) {
         return false;
@@ -32,8 +61,8 @@ var Listly = function() {
     function load() {
       if (supportsLocalStorage() && localStorage.tasks) {
         self.tasks = JSON.parse(localStorage.tasks);
-        $.each(self.tasks, function(index, name) {
-          $('#tasks').append('<li class="list-group-item">' + name + '</li>');
+        $.each(self.tasks, function(index, task_name) {
+          appendToList(task_name);
         });
       }
     }
@@ -56,7 +85,8 @@ var Listly = function() {
       if (addTask(task_name)) {
         field.val('');
       } else {
-        showFormError(this);
+         // setTimeout(showFormError(this), 3000);
+         // removeFormError(this);
       }
       field.focus().select();
     });
