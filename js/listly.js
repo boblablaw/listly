@@ -6,6 +6,7 @@ var Listly = function () {
 
     function addTask(task_name) {
       self.tasks.push(task_name);
+
       if (save()) {
         appendToList(task_name);
         return true;
@@ -24,11 +25,7 @@ var Listly = function () {
       li.removeClass('hidden');
 
       li.find('.btn-danger').click(function() {
-        // Remove it from the array
-        index = self.tasks.indexOf(li.find('label').text());
-        self.tasks.slice(index, 1);
-        // Save the array to local storage
-
+        removeFromList(task_name);
         // Remove it from the <ol>
         li.remove();
       });
@@ -37,7 +34,8 @@ var Listly = function () {
     }
 
     function removeFromList(task_name) {
-
+      self.tasks.splice(self.tasks.indexOf(task_name), 1);
+      save();
     }
 
     function showFormError(form) {
