@@ -16,16 +16,46 @@ var Listly = function () {
     }
 
     function appendToList(task) {
-      var li = $('#list_item_template').clone();
+      var li, label;
+      
+      li = $('#list_item_template').clone();
       li.removeAttr('id').removeClass('hidden');
       li.addClass('task');
       li.attr('data-task-id', task.id);
-      li.find('label').text(task.name);
+      
+      label = li.find('label');
+      label.append(' ' + task.name);
 
-      $('#tasks').append(li);
+      if (task.completed) {
+        label.find('input[type=checkbox]').attr('checked', true);
+        label.addClass('completed');
+      }
 
       li.find('button.delete').click(task, removeFromList);
       li.find('button.edit').click(task, createEditForm); 
+      li.find('input[type=checkbox]').change(toggleTaskCompletion);
+
+      $('#tasks').append(li);
+    }
+
+    function toggleTaskCompletion(ev) {
+      // this = checkbox
+      var checkbox, task_id, task, label;
+      
+      checkbox = $(this);
+      task_id = checkbox.closest('li.task').data('task-id');
+      task = getTaskById(task_id);
+      task.completed = checkbox.prop('checked');
+      
+      label = checkbox.closest('label');
+
+      if (task.completed) {
+        label.addClass('completed');
+      } else {
+        label.removeClass('completed');
+      }
+      
+      save();
     }
 
     function createEditForm(ev) {
@@ -71,7 +101,10 @@ var Listly = function () {
       task.name = field.val();
 
       if (save()) {
-        $(this).siblings('label').text(field.val());
+        var label = $(this).siblings('label');
+        var checkbox = label.find('input[type=checkbox]');
+        $(this).siblings('label').text(' ' + field.val());
+
         removeEditForm(this);
       }
     }      

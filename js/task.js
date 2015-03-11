@@ -21,6 +21,7 @@ var Task = function() {
 		this.name = properties.name;
 		this.id = getOrSetId(properties.id);
 		this.position = properties.position;
+		this.completed = !!properties.completed;
 	}
 
 	return Task;
