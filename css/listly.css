@@ -1,4 +1,5 @@
-.btn-danger {
-	float: right;
-	margin-top: -5;
+.btn-group {
+	position: absolute;
+	top: 8px;
+	right: 8px;
 }
