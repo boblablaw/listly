@@ -20,6 +20,7 @@ var Task = function() {
 	function Task(properties) { //constructor
 		this.name = properties.name;
 		this.id = getOrSetId(properties.id);
+		this.position = properties.position;
 	}
 
 	return Task;
